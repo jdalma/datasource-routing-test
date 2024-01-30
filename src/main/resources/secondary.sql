@@ -1,8 +1,8 @@
-CREATE TABLE user (
-  id INTEGER AUTO_INCREMENT,
-  name varchar(25) NOT NULL,
-  PRIMARY KEY(id)
+CREATE TABLE MEMBER (
+    id INTEGER NOT NULL,
+    name varchar(25) NOT NULL,
+    PRIMARY KEY(id)
 );
 
-insert into user (id, name)
+insert into MEMBER (id, name)
 values (1, 'secondary1'), (2, 'secondary2'), (3, 'secondary3'), (4, 'secondary4');
