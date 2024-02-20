@@ -8,6 +8,7 @@ import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import javax.sql.DataSource
 
 @Configuration
 class ReplicationDataSourceConfig {
@@ -20,7 +21,7 @@ class ReplicationDataSourceConfig {
     fun routingDataSource() = RoutingDataSource(primaryDataSource(), secondaryDataSource())
 
    @Bean
-    fun primaryDataSource() = EmbeddedDatabaseBuilder()
+    fun primaryDataSource(): DataSource = EmbeddedDatabaseBuilder()
         .setName("primary")
         .setType(EmbeddedDatabaseType.H2)
         .setScriptEncoding("UTF-8")
@@ -28,7 +29,7 @@ class ReplicationDataSourceConfig {
         .build()
 
    @Bean
-    fun secondaryDataSource() = EmbeddedDatabaseBuilder()
+    fun secondaryDataSource(): DataSource = EmbeddedDatabaseBuilder()
         .setName("secondary")
         .setType(EmbeddedDatabaseType.H2)
         .setScriptEncoding("UTF-8")

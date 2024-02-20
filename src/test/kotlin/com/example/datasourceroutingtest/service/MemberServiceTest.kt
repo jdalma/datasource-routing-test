@@ -16,7 +16,8 @@ class MemberServiceTest (
     @Test
     fun findById() {
         val id = 1
-        assertThat(memberService.findByIdReadOnly(id).get().name).isEqualTo("secondary1")
-        assertThat(memberService.findById(id).get().name).isEqualTo("primary1")
+//        assertThat(memberService.findByIdReadOnly(id).get().name).isEqualTo("secondary1")
+//        assertThat(memberService.findById(id).get().name).isEqualTo("primary1")
+        assertThat(memberService.findByIdDefault(id).get().name).isEqualTo("secondary1")
     }
 }

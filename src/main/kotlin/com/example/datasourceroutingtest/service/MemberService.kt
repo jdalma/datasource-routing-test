@@ -14,4 +14,6 @@ class MemberService (
 
     @Transactional(readOnly = false)
     fun findById(id: Int) = memberRepository.findById(id)
+
+    fun findByIdDefault(id: Int) = memberRepository.findById(id)
 }
