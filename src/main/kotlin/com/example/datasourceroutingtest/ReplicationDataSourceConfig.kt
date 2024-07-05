@@ -1,39 +1,39 @@
 package com.example.datasourceroutingtest
 
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.DependsOn
 import org.springframework.context.annotation.Primary
+import org.springframework.jdbc.datasource.DataSourceTransactionManager
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
-import org.springframework.transaction.annotation.EnableTransactionManagement
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionManager
 import javax.sql.DataSource
 
 @Configuration
 class ReplicationDataSourceConfig {
 
+    @Bean
+    fun transactionManager(): TransactionManager = DataSourceTransactionManager(LazyConnectionDataSourceProxy(routingDataSource()))
+
+    @Bean
     @Primary
-    @Bean
-    fun dataSource() = LazyConnectionDataSourceProxy(routingDataSource())
+    @DependsOn("primaryDataSource", "secondaryDataSource")
+    fun routingDataSource(): DataSource = RoutingDataSource(primaryDataSource(), secondaryDataSource())
 
     @Bean
-    fun routingDataSource() = RoutingDataSource(primaryDataSource(), secondaryDataSource())
+    @ConfigurationProperties(prefix = "spring.datasource.primary")
+    fun primaryDataSource(): DataSource {
+        return DataSourceBuilder.create().build()
+    }
 
-   @Bean
-    fun primaryDataSource(): DataSource = EmbeddedDatabaseBuilder()
-        .setName("primary")
-        .setType(EmbeddedDatabaseType.H2)
-        .setScriptEncoding("UTF-8")
-        .addScript("primary.sql")
-        .build()
-
-   @Bean
-    fun secondaryDataSource(): DataSource = EmbeddedDatabaseBuilder()
-        .setName("secondary")
-        .setType(EmbeddedDatabaseType.H2)
-        .setScriptEncoding("UTF-8")
-        .addScript("secondary.sql")
-        .build()
-
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.secondary")
+    fun secondaryDataSource(): DataSource {
+        return DataSourceBuilder.create().build()
+    }
 }

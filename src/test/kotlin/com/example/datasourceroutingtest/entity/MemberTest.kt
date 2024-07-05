@@ -4,9 +4,9 @@ import com.example.datasourceroutingtest.repository.MemberRepository
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 
-@SpringBootTest
+@DataJpaTest
 class MemberTest (
     @Autowired
     private val memberRepository: MemberRepository
@@ -14,11 +14,10 @@ class MemberTest (
 
     @Test
     fun name() {
-        val findMember1 = memberRepository.findById(1).get()
-        Assertions.assertThat(findMember1.name).isEqualTo("primary1")
+        val member = Member(1, "읽기전용1")
+        memberRepository.save(member)
 
-        memberRepository.save(Member(1, "primary1 update"))
-        val findMember2 = memberRepository.findById(1).get()
-        Assertions.assertThat(findMember2.name).isEqualTo("primary1 update")
+        val findMember1 = memberRepository.findById(1).get()
+        Assertions.assertThat(findMember1.name).isEqualTo("읽기전용1")
     }
 }

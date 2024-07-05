@@ -9,7 +9,7 @@ import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "MEMBER")
+@Table(name = "members")
 class Member (
     @Id
     @Column(nullable = false)

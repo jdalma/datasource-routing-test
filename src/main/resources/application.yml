@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    primary:
+      driverClassName: com.mysql.cj.jdbc.Driver
+      jdbcUrl: jdbc:mysql://localhost:3306/test
+      username: root
+      password: root
+    secondary:
+      driverClassName: com.mysql.cj.jdbc.Driver
+      jdbcUrl: jdbc:mysql://localhost:3307/test
+      username: root
+      password: root

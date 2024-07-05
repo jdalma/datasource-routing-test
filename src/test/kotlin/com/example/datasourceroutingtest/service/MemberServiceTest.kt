@@ -1,11 +1,12 @@
 package com.example.datasourceroutingtest.service
 
-import org.assertj.core.api.Assertions
+import com.example.datasourceroutingtest.entity.Member
 import org.assertj.core.api.Assertions.*
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 class MemberServiceTest (
@@ -14,10 +15,16 @@ class MemberServiceTest (
 ) {
 
     @Test
+    fun findAll() {
+        assertThat(memberService.findAllPrimary()).hasSize(4)
+        assertThat(memberService.findAllSecondary()).hasSize(2)
+    }
+
+    @Test
     fun findById() {
         val id = 1
-//        assertThat(memberService.findByIdReadOnly(id).get().name).isEqualTo("secondary1")
-//        assertThat(memberService.findById(id).get().name).isEqualTo("primary1")
-        assertThat(memberService.findByIdDefault(id).get().name).isEqualTo("secondary1")
+        assertThat(memberService.findByIdSecondary(id).get().name).isEqualTo("읽기전용1")
+        assertThat(memberService.findByIdPrimary(id).get().name).isEqualTo("읽기/쓰기1")
+        assertThat(memberService.findByIdDefault(id).get().name).isEqualTo("읽기전용1")
     }
 }
