@@ -22,5 +22,5 @@ class MemberService (
     fun findAllPrimary(): Iterable<Member> = memberRepository.findAll()
 
     @Transactional(readOnly = true)
-    open fun findAllSecondary(): Iterable<Member> = memberRepository.findAll()
+    fun findAllSecondary(): Iterable<Member> = memberRepository.findAll()
 }

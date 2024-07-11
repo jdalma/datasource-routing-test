@@ -10,19 +10,21 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
+import org.springframework.orm.jpa.JpaTransactionManager
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionManager
 import javax.sql.DataSource
+import javax.xml.crypto.Data
 
 @Configuration
 class ReplicationDataSourceConfig {
 
     @Bean
-    fun transactionManager(): TransactionManager = DataSourceTransactionManager(LazyConnectionDataSourceProxy(routingDataSource()))
+    @Primary
+    @DependsOn("primaryDataSource", "secondaryDataSource", "routingDataSource")
+    fun dataSource(): DataSource = LazyConnectionDataSourceProxy(routingDataSource())
 
     @Bean
-    @Primary
-    @DependsOn("primaryDataSource", "secondaryDataSource")
     fun routingDataSource(): DataSource = RoutingDataSource(primaryDataSource(), secondaryDataSource())
 
     @Bean
