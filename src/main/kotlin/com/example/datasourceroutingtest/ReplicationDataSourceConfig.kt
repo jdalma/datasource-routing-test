@@ -6,26 +6,26 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.DependsOn
 import org.springframework.context.annotation.Primary
-import org.springframework.jdbc.datasource.DataSourceTransactionManager
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
-import org.springframework.orm.jpa.JpaTransactionManager
-import org.springframework.transaction.PlatformTransactionManager
-import org.springframework.transaction.TransactionManager
 import javax.sql.DataSource
-import javax.xml.crypto.Data
 
 @Configuration
 class ReplicationDataSourceConfig {
 
     @Bean
     @Primary
-    @DependsOn("primaryDataSource", "secondaryDataSource", "routingDataSource")
-    fun dataSource(): DataSource = LazyConnectionDataSourceProxy(routingDataSource())
+    @DependsOn("primaryDataSource", "secondaryDataSource")
+    fun dataSource(): DataSource = LazyConnectionDataSourceProxy(primaryDataSource()).apply {
+        setReadOnlyDataSource(secondaryDataSource())
+    }
 
-    @Bean
-    fun routingDataSource(): DataSource = RoutingDataSource(primaryDataSource(), secondaryDataSource())
+    // @Bean
+    // fun routingDataSource(): DataSource = RoutingDataSource(primaryDataSource(), secondaryDataSource())
+
+    // @Bean
+    // @Primary
+    // @DependsOn("primaryDataSource", "secondaryDataSource")
+    // fun dataSource(): DataSource = LazyConnectionDataSourceProxy(RoutingDataSource(primaryDataSource(), secondaryDataSource()))
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.primary")
