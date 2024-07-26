@@ -12,20 +12,20 @@ import javax.sql.DataSource
 @Configuration
 class ReplicationDataSourceConfig {
 
-    @Bean
-    @Primary
-    @DependsOn("primaryDataSource", "secondaryDataSource")
-    fun dataSource(): DataSource = LazyConnectionDataSourceProxy(primaryDataSource()).apply {
-        setReadOnlyDataSource(secondaryDataSource())
-    }
-
-    // @Bean
-    // fun routingDataSource(): DataSource = RoutingDataSource(primaryDataSource(), secondaryDataSource())
-
     // @Bean
     // @Primary
     // @DependsOn("primaryDataSource", "secondaryDataSource")
-    // fun dataSource(): DataSource = LazyConnectionDataSourceProxy(RoutingDataSource(primaryDataSource(), secondaryDataSource()))
+    // fun dataSource(): DataSource = LazyConnectionDataSourceProxy(primaryDataSource()).apply {
+    //     setReadOnlyDataSource(secondaryDataSource())
+    // }
+
+    @Bean
+    @Primary
+    @DependsOn("primaryDataSource", "secondaryDataSource", "routingDataSource")
+    fun dataSource(): DataSource = LazyConnectionDataSourceProxy(routingDataSource())
+
+    @Bean
+    fun routingDataSource(): DataSource = RoutingDataSource(primaryDataSource(), secondaryDataSource())
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.primary")
